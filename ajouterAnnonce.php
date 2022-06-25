@@ -2,158 +2,192 @@
 
 require_once('header/header.php');
 
+$titreErr = $descriptionCourteErr = $descriptionLongueErr = $prixErr = $adresseErr = $cpErr = '';
 
 if (isset($_POST['annonce'])) {
 
     if (isset($_POST['titre']) && isset($_POST['descriptionCourte']) && isset($_POST['descriptionLongue']) && isset($_POST['prix']) && isset($_POST['pays']) && isset($_POST['ville']) && isset($_POST['adresse']) && isset($_POST['cp']) && isset($_POST['categorie'])) {
 
-        if ($_POST['titre'] == "" || $_POST['descriptionCourte'] == "" || $_POST['descriptionLongue'] == "" || $_POST['prix'] == "" || $_POST['pays'] == "" || $_POST['ville'] == "" || $_POST['adresse'] == "" || $_POST['cp'] == "" || $_POST['categorie'] == "") {
+        function uploadFichier($fichier)
+        {
 
-            echo "<script>alert('Entrez tout les infos')</script>";
-        } else {
+            $targetDir = "upload/";
+            $allowTypes = array('jpg', 'png', 'jpeg', 'gif');
 
-            // Fonction pour l'upload d'image
-            function uploadImage($fichier)
-            {   $total_count = count($fichier['name']);
-                $num = 1;
+            $statusMsg = $errorMsg = $insertValuesSQL = $errorUpload = $errorUploadType = '';
+            $fileNames = array_filter($fichier['name']);
+            if (!empty($fileNames)) {
+                var_dump($_FILES);
 
-                for( $i=0 ; $i < $total_count ; $i++ ) {
+                foreach ($fichier['name'] as $key => $val) {
 
-                $tmpName = $fichier['tmp_name'][$i];
-                $name = $fichier['name'][$i];
-                $size = $fichier['size'][$i];
-                $error = $fichier['error'][$i];
-                var_dump($tmpName);
+                    $fileName = basename($fichier['name'][$key]);
 
-                // On décompose le nom du fichier pour avoir son extension
-                $tabExtension = explode('.', $name);
-                var_dump($tmpName);
-                // var_dump($tabExtension);
-                // var_dump($name);
-                // On met l'extension tout en minuscule pour éviter les erreuirs de saisit
-                $extension[] = strtolower($tabExtension[1]);
-                
-                var_dump($tmpName);
+                    $file = uniqid('', true) . $fileName;
+                    $targetFilePath = $targetDir . $file;
 
+                    $uploadedfile[] = $file;
 
-                // On fais un array pour les noms d'extensions autorisé
-                $extensions = ['jpg', 'png', 'jpeg'];
-                // On détermine la taille max du fichier en octets
-                $maxSize = 400000;
-                // Condition extension/taille/error
-                if ($error[0] == 0) {
+                    var_dump($uploadedfile);
 
-                    $uniqueName = uniqid('', true);
-                    var_dump($uniqueName);
-                    var_dump($extension);
-                    $file = $uniqueName . "." . $extension;
-                    var_dump($file);
-                    move_uploaded_file($tmpName, './upload/' . $file);
-                    var_dump($file);
-                    // On return la valeur de $file
-                    return $file;
-                }
-                } 
-            }
-            // var_dump($file);
-            var_dump($_FILES['file1']);
-            
-            // var_dump($file2);
-            // image 1
+                    global $uploadedfile;
 
-            if (isset($_FILES['file1'])) {
-
-                $file1 = uploadImage($_FILES['file1']);
-            }
-
-            // image 2
-
-            // if ($_FILES['file2']) {
-
-            //     $file2 = uploadImage($_FILES['file2']);
-            // }
-
-            // // image 3
-            // if ($_FILES['file3']  !== '') {
-
-            //     $file3 = uploadImage($_FILES['file3']);
-            // }
-
-            // // image 4
-            // if ($_FILES['file4']  !== '') {
-
-            //     $file4 = uploadImage($_FILES['file4']);
-            // }
-
-            // // image 5
-            // if ($_FILES['file5']  !== '') {
-
-            //     $file5 = uploadImage($_FILES['file5']);
-            // }
-
-            $insertion = $pdo->prepare("INSERT INTO photo (photo1, photo2, photo3, photo4, photo5) VALUE (:image1, :image2, :image3, :image4, :image5)");
-            $insertion->bindParam(':image1', $file1, PDO::PARAM_STR);
-            $insertion->bindParam(':image2', $file2, PDO::PARAM_STR);
-            $insertion->bindParam(':image3', $file3, PDO::PARAM_STR);
-            $insertion->bindParam(':image4', $file4, PDO::PARAM_STR);
-            $insertion->bindParam(':image5', $file5, PDO::PARAM_STR);
-            $insertion->execute();
+                    // Check whether file type is valid 
+                    $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
 
 
+                    if (in_array($fileType, $allowTypes)) {
 
-            $photo = $file;
-
-//  . ", " . $file2 . ", " . $file3 . ", " . $file4 . ", " . $file5;
-
-            $reponse = $pdo->prepare("SELECT photo_id FROM photo WHERE photo1 = :photo1");
-            $reponse->bindParam(':photo1', $file1, PDO::PARAM_STR);
-            $reponse->execute();
-            $imageI = $reponse->fetch(PDO::FETCH_ASSOC);
-            $imageID = intval($imageI['photo_id']);
-
-            $titre = trim($_POST['titre']);
-            if (strlen($titre) > 300 || strlen($titre) < 1) {
-                echo "<script type='text/javascript'>alert('Ce titre est trop long ou trop court');</script>";
-            } else {
-
-                $descriptionCourte = trim($_POST['descriptionCourte']);
-                $descriptionLongue = trim($_POST['descriptionLongue']);
-                $prix = trim($_POST['prix']);
-                $pays = trim($_POST['pays']);
-                $ville = trim($_POST['ville']);
-                $adresse = trim($_POST['adresse']);
-                $cp = trim($_POST['cp']);
-                if (!is_numeric($cp)) {
-                    echo "<script type='text/javascript'>alert('Ce code postal est invalide');</script>";
-                } else {
-
-
-                    $categorie = trim($_POST['categorie']);
-                    $membre_id = trim($_SESSION['user']);
-
-                    $inscription = $pdo->prepare("INSERT INTO annonce (titre, description_courte, description_longue, prix, photo, pays, ville, adresse, cp, membre_id, photo_id, categorie_id, date_enregistrement) VALUES (:titre, :descriptionCourte, :descriptionLongue, :prix, :photo, :pays, :ville, :adresse, :cp, :membre_id, :photo_id, :categorie, NOW())");
-                    $inscription->bindParam(':titre', $titre, PDO::PARAM_STR);
-                    $inscription->bindParam(':descriptionCourte', $descriptionCourte, PDO::PARAM_STR);
-                    $inscription->bindParam(':descriptionLongue', $descriptionLongue, PDO::PARAM_STR);
-                    $inscription->bindParam(':prix', $prix, PDO::PARAM_STR);
-                    $inscription->bindParam(':photo', $photo, PDO::PARAM_STR);
-                    $inscription->bindParam(':pays', $pays, PDO::PARAM_STR);
-                    $inscription->bindParam(':ville', $ville, PDO::PARAM_STR);
-                    $inscription->bindParam(':adresse', $adresse, PDO::PARAM_STR);
-                    $inscription->bindParam(':cp', $cp, PDO::PARAM_STR);
-                    $inscription->bindParam(':membre_id', $membre_id, PDO::PARAM_STR);
-                    $inscription->bindParam(':photo_id', $imageID, PDO::PARAM_STR);
-                    $inscription->bindParam(':categorie', $categorie, PDO::PARAM_STR);
-                    $inscription->execute();
-
-                    echo "
-
-        ";
+                        if (move_uploaded_file($fichier["tmp_name"][$key], $targetFilePath)) {
+                        } else {
+                            $errorUpload .= $fichier['name'][$key] . ' | ';
+                        }
+                    } else {
+                        $errorUploadType .= $fichier['name'][$key] . ' | ';
+                    }
                 }
             }
         }
+
+
+
+        if (isset($_FILES['file1'])) {
+
+            uploadFichier($_FILES['file1']);
+            $insertion = $pdo->prepare("INSERT INTO photo (photo1) VALUE (:image1)");
+            $insertion->bindParam(':image1', $uploadedfile[0], PDO::PARAM_STR);
+            $insertion->execute();
+        }
+
+        $photo = $uploadedfile[0];
+
+        if (!empty($uploadedfile[1])) {
+
+            $reponse = $pdo->prepare("SELECT photo_id FROM photo WHERE photo1 = :photo1");
+            $reponse->bindParam(':photo1', $photo, PDO::PARAM_STR);
+            $reponse->execute();
+            $imageI = $reponse->fetch(PDO::FETCH_ASSOC);
+            $image1 = $imageI['photo_id'];
+
+            $insertion = $pdo->prepare("UPDATE photo SET photo2 = :image2 where photo_id = $image1");
+            $insertion->bindParam(':image2', $uploadedfile[1], PDO::PARAM_STR);
+            $insertion->execute();
+        }
+
+        $reponse = $pdo->prepare("SELECT photo_id FROM photo WHERE photo1 = :photo1");
+        $reponse->bindParam(':photo1', $photo, PDO::PARAM_STR);
+        $reponse->execute();
+        $imageI = $reponse->fetch(PDO::FETCH_ASSOC);
+        $image1 = $imageI['photo_id'];
+
+        if (!empty($uploadedfile[1])) {
+
+            $insertion = $pdo->prepare("UPDATE photo SET photo2 = :image2 where photo_id = $image1");
+            $insertion->bindParam(':image2', $uploadedfile[1], PDO::PARAM_STR);
+            $insertion->execute();
+        }
+
+
+        if (!empty($uploadedfile[2])) {
+            $insertion = $pdo->prepare("UPDATE photo SET photo3 = :image2 where photo_id = $image1");
+            $insertion->bindParam(':image2', $uploadedfile[2], PDO::PARAM_STR);
+            $insertion->execute();
+        }
+
+        if (!empty($uploadedfile[3])) {
+            $insertion = $pdo->prepare("UPDATE photo SET photo4 = :image2 where photo_id = $image1");
+            $insertion->bindParam(':image2', $uploadedfile[3], PDO::PARAM_STR);
+            $insertion->execute();
+        }
+
+        if (!empty($uploadedfile[4])) {
+            $insertion = $pdo->prepare("UPDATE photo SET photo5 = :image2 where photo_id = $image1");
+            $insertion->bindParam(':image2', $uploadedfile[4], PDO::PARAM_STR);
+            $insertion->execute();
+        }
+
+        $reponse = $pdo->prepare("SELECT photo_id FROM photo WHERE photo1 = :photo1");
+        $reponse->bindParam(':photo1', $photo, PDO::PARAM_STR);
+        $reponse->execute();
+        $imageI = $reponse->fetch(PDO::FETCH_ASSOC);
+        var_dump($imageI);
+        $imageID = intval($imageI['photo_id']);
+
+
+        if (empty($_POST['titre'])) {
+            $titreErr = "Un titre est necessaire";
+        } else {
+            $titre = trim($_POST['titre']);
+        }
+
+        if (empty($_POST['descriptionCourte'])) {
+            $descriptionCourteErr = "Une description courte est necessaire";
+        } else {
+
+            $descriptionCourte = trim($_POST['descriptionCourte']);
+        }
+
+        if (empty($_POST['descriptionLongue'])) {
+            $descriptionLongueErr = "Une description longue est necessaire";
+        } else {
+            $descriptionLongue = trim($_POST['descriptionLongue']);
+        }
+
+        if (empty($_POST['prix'])) {
+            $prixErr = "Un prix est necessaire";
+        } else {
+            $prix = trim($_POST['prix']);
+        }
+
+
+        $pays = trim($_POST['pays']);
+        $ville = trim($_POST['ville']);
+
+        if (empty($_POST['adresse'])) {
+            $adresseErr = "Une adresse est necessaire";
+        } else {
+            $adresse = trim($_POST['adresse']);
+        }
+
+        if (empty($_POST['cp'])) {
+            $cpErr = "Un code postal est necessaire";
+        } else {
+
+            $cp = trim($_POST['cp']);
+        }
+
+
+        if (strlen($titre) > 300 || strlen($titre) < 1) {
+            $titreErr = "Ce titre est trop court ou trop long";
+        } else {
+
+            $categorie = trim($_POST['categorie']);
+            $membre_id = trim($_SESSION['user']);
+
+
+            $inscription = $pdo->prepare("INSERT INTO annonce (titre, description_courte, description_longue, prix, photo, pays, ville, adresse, cp, membre_id, photo_id, categorie_id, date_enregistrement) VALUES (:titre, :descriptionCourte, :descriptionLongue, :prix, :photo, :pays, :ville, :adresse, :cp, :membre_id, :photo_id, :categorie, NOW())");
+
+            $inscription->bindParam(':titre', $titre, PDO::PARAM_STR);
+            $inscription->bindParam(':descriptionCourte', $descriptionCourte, PDO::PARAM_STR);
+            $inscription->bindParam(':descriptionLongue', $descriptionLongue, PDO::PARAM_STR);
+            $inscription->bindParam(':prix', $prix, PDO::PARAM_STR);
+            $inscription->bindParam(':photo', $photo, PDO::PARAM_STR);
+            $inscription->bindParam(':pays', $pays, PDO::PARAM_STR);
+            $inscription->bindParam(':ville', $ville, PDO::PARAM_STR);
+            $inscription->bindParam(':adresse', $adresse, PDO::PARAM_STR);
+            $inscription->bindParam(':cp', $cp, PDO::PARAM_STR);
+            $inscription->bindParam(':membre_id', $membre_id, PDO::PARAM_STR);
+            $inscription->bindParam(':photo_id', $imageID, PDO::PARAM_STR);
+            $inscription->bindParam(':categorie', $categorie, PDO::PARAM_STR);
+            $inscription->execute();
+
+            echo "
+
+                ";
+        }
     }
 }
+
 
 
 
@@ -172,19 +206,19 @@ if (isset($_POST['annonce'])) {
 
             <div class="col-5">
                 <div class="form-group mb-2">
-                    <label for="titre">Ttitre de l'annonce</label>
+                    <label for="titre">Ttitre de l'annonce</label><span class="error" style="color: #FF0000;"><?php echo " " . $titreErr; ?></span>
                     <input type="text" class="form-control" id="titre" name="titre" placeholder="Entrez le titre">
                 </div>
                 <div class="form-group mb-2">
-                    <label for="descriptionCourte">Description courte</label>
+                    <label for="descriptionCourte">Description courte</label><span class="error" style="color: #FF0000;"><?php echo " " . $descriptionCourteErr; ?></span>
                     <input type="text" class="form-control" id="descriptionCourte" name="descriptionCourte" placeholder="Entrez une description courte">
                 </div>
                 <div class="form-group mb-2">
-                    <label for="descriptionLongue">Description longue</label>
+                    <label for="descriptionLongue">Description longue</label><span class="error" style="color: #FF0000;"><?php echo " " . $descriptionLongueErr; ?></span>
                     <input type="text" class="form-control" class="" id="descriptionLongue" name="descriptionLongue" placeholder="Entrez une discription longue">
                 </div>
                 <div class="form-group mb-2">
-                    <label for="prix">Le prix</label>
+                    <label for="prix">Le prix</label><span class="error" style="color: #FF0000;"><?php echo " " . $prixErr; ?></span>
                     <input type="text" class="form-control" id="prix" name="prix" placeholder="Entrez le prix">
                 </div>
 
@@ -209,8 +243,8 @@ if (isset($_POST['annonce'])) {
 
             <div class="col-5">
                 <div class="form-group row">
-                    <label for="pays">Choisir 5 images maximum</label>
-                    <input type="file" class="col-2 mx-auto" name="file1[]" id="file1" multiple = "multiple">
+                    <label for="pays">Choisir 5 images max</label>
+                    <input type="file" class="col-2 mx-auto" name="file1[]" id="file1" multiple="multiple">
                     <!-- <input type="file" class="col-2 mx-auto" name="file1[]" id="file1">
                     <input type="file" class="col-2 mx-auto" name="file2[]" id="file2">
                     <input type="file" class="col-2 mx-auto" name="file3[]" id="file3">
@@ -255,11 +289,11 @@ if (isset($_POST['annonce'])) {
                     </select>
                 </div>
                 <div class="form-group mb-2">
-                    <label for="adresse">Votre adresse</label>
+                    <label for="adresse">Votre adresse</label><span class="error" style="color: #FF0000;"><?php echo " " . $adresseErr; ?></span>
                     <input type="text" class="form-control" id="adresse" name="adresse" placeholder="Entrez votre adresse">
                 </div>
                 <div class="form-group mb-2">
-                    <label for="cp">Votre code postal</label>
+                    <label for="cp">Votre code postal</label><span class="error" style="color: #FF0000;"><?php echo " " . $cpErr; ?></span>
                     <input type="text" class="form-control" id="cp" name="cp" placeholder="Entrez votre code postal">
                 </div>
 
