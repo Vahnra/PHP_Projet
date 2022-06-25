@@ -7,6 +7,8 @@ if (isset($_POST['voir'])) {
 }
 
 require_once('header/header.php');
+
+var_dump($_SESSION);
 ?>
 
 
@@ -130,7 +132,7 @@ require_once('header/header.php');
         <div class='col mb-5'>
             <div class='card h-100' style='width: 20rem;'>
                 
-                <img class='card-img-top' src='upload/$donnees[photo1]' alt='...' />
+                <img class='card-img-top' style='max-width: 100%; object-fit:cover; aspect-ratio: 1;' ' src='upload/$donnees[photo1]' alt='...' />
                     <div class='card-body p-4'>
                         <div class='text-center'>
                             <!-- Product name-->

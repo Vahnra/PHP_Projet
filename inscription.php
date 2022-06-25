@@ -8,8 +8,7 @@ $pseudo = $nom = $prenom = $prenom = $telephone = $sexe = $mail = $mdp = '';
 if (isset($_POST['pseudo']) && isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['telephone']) && isset($_POST['sexe']) && isset($_POST['mail'])  && isset($_POST['motDePasse'])) {
 
     if ($_POST['pseudo'] == "" || $_POST['nom'] == "" || $_POST['prenom'] == "" || $_POST['telephone'] == "" || $_POST['sexe'] == "" || $_POST['mail'] == "" || $_POST['motDePasse'] == "") {
-        // echo "
-        // <script>alert('Entrez tout les infos')</script>
+ 
         if (empty($_POST["pseudo"])) {
             $pseudoErr = "Un pseudo est necessaire";
         }else{

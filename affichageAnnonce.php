@@ -64,19 +64,19 @@ $id = $_GET['id'];
         </div>
         <div class='carousel-inner' style='max-width:50rem; max-height:50rem !important;'>
           <div class='carousel-item active' data-bs-interval='500000000'>
-            <img src='upload/$donnees[photo1]' class='d-block w-100' alt='...'>
+            <img src='upload/$donnees[photo1]' class='d-block w-100' style='max-width:100%; object-fit:cover; aspect-ratio: 1; alt='...'>
           </div>
           <div class='carousel-item' data-bs-interval='500000000'>
-            <img src='upload/$donnees[photo2]' class='d-block w-100' alt='...'>
+            <img src='upload/$donnees[photo2]' class='d-block w-100' style='max-width:100%; object-fit:cover; aspect-ratio: 1; alt='...'>
           </div>
           <div class='carousel-item' data-bs-interval='500000000'>
-            <img src='upload/$donnees[photo3]' class='d-block w-100' alt='...'>
+            <img src='upload/$donnees[photo3]' class='d-block w-100' style='max-width:100%; object-fit:cover; aspect-ratio: 1; alt='...'>
           </div>
           <div class='carousel-item' data-bs-interval='500000000'>
-            <img src='upload/$donnees[photo4]' class='d-block w-100' alt='...'>
+            <img src='upload/$donnees[photo4]' class='d-block w-100' style='max-width:100%; object-fit:cover; aspect-ratio: 1; alt='...'>
           </div>
           <div class='carousel-item' data-bs-interval='500000000'>
-            <img src='upload/$donnees[photo5]' class='d-block w-100' alt='...'>
+            <img src='upload/$donnees[photo5]' class='d-block w-100' style='max-width:100%; object-fit:cover; aspect-ratio: 1; alt='...'>
           </div>
           <button class='carousel-control-prev' type='button' data-bs-target='#carouselExampleIndicators' data-bs-slide='prev'>
           <span class='carousel-control-prev-icon' aria-hidden='true'></span>

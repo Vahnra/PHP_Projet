@@ -10,7 +10,6 @@ if (isset($_POST['delete'])) {
     $reponse = $pdo->query("DELETE FROM annonce WHERE id_annonce = $deleted");
     echo "
     <script type='text/javascript'>alert('Annonce supprimé');</script>
-    <script>window.location = 'Annonce.php'</script>
     ";
 }
 

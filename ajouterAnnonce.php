@@ -14,16 +14,26 @@ if (isset($_POST['annonce'])) {
 
             // Fonction pour l'upload d'image
             function uploadImage($fichier)
-            {
-                $tmpName = $fichier['tmp_name'];
-                $name = $fichier['name'];
-                $size = $fichier['size'];
-                $error = $fichier['error'];
+            {   $total_count = count($fichier['name']);
+                $num = 1;
+
+                for( $i=0 ; $i < $total_count ; $i++ ) {
+
+                $tmpName = $fichier['tmp_name'][$i];
+                $name = $fichier['name'][$i];
+                $size = $fichier['size'][$i];
+                $error = $fichier['error'][$i];
+                var_dump($tmpName);
 
                 // On décompose le nom du fichier pour avoir son extension
-                $tabExtension = explode('.', $name[0]);
+                $tabExtension = explode('.', $name);
+                var_dump($tmpName);
+                // var_dump($tabExtension);
+                // var_dump($name);
                 // On met l'extension tout en minuscule pour éviter les erreuirs de saisit
-                $extension = strtolower($tabExtension[1]);
+                $extension[] = strtolower($tabExtension[1]);
+                
+                var_dump($tmpName);
 
 
                 // On fais un array pour les noms d'extensions autorisé
@@ -31,22 +41,24 @@ if (isset($_POST['annonce'])) {
                 // On détermine la taille max du fichier en octets
                 $maxSize = 400000;
                 // Condition extension/taille/error
-                if (in_array($extension, $extensions) && $error[0] == 0) {
+                if ($error[0] == 0) {
 
                     $uniqueName = uniqid('', true);
-
-
+                    var_dump($uniqueName);
+                    var_dump($extension);
                     $file = $uniqueName . "." . $extension;
-
-                    move_uploaded_file($tmpName[0], './upload/' . $file);
-
+                    var_dump($file);
+                    move_uploaded_file($tmpName, './upload/' . $file);
+                    var_dump($file);
                     // On return la valeur de $file
                     return $file;
-                } else {
-                    echo "Mauvaise extension ou taille trop grande";
                 }
+                } 
             }
-
+            // var_dump($file);
+            var_dump($_FILES['file1']);
+            
+            // var_dump($file2);
             // image 1
 
             if (isset($_FILES['file1'])) {
@@ -56,28 +68,28 @@ if (isset($_POST['annonce'])) {
 
             // image 2
 
-            if (isset($_FILES['file2'])) {
+            // if ($_FILES['file2']) {
 
-                $file2 = uploadImage($_FILES['file2']);
-            }
+            //     $file2 = uploadImage($_FILES['file2']);
+            // }
 
-            // image 3
-            if (isset($_FILES['file3'])) {
+            // // image 3
+            // if ($_FILES['file3']  !== '') {
 
-                $file3 = uploadImage($_FILES['file3']);
-            }
+            //     $file3 = uploadImage($_FILES['file3']);
+            // }
 
-            // image 4
-            if (isset($_FILES['file4'])) {
+            // // image 4
+            // if ($_FILES['file4']  !== '') {
 
-                $file4 = uploadImage($_FILES['file4']);
-            }
+            //     $file4 = uploadImage($_FILES['file4']);
+            // }
 
-            // image 5
-            if (isset($_FILES['file5'])) {
+            // // image 5
+            // if ($_FILES['file5']  !== '') {
 
-                $file5 = uploadImage($_FILES['file5']);
-            }
+            //     $file5 = uploadImage($_FILES['file5']);
+            // }
 
             $insertion = $pdo->prepare("INSERT INTO photo (photo1, photo2, photo3, photo4, photo5) VALUE (:image1, :image2, :image3, :image4, :image5)");
             $insertion->bindParam(':image1', $file1, PDO::PARAM_STR);
@@ -89,9 +101,9 @@ if (isset($_POST['annonce'])) {
 
 
 
-            $photo = $file1 . ", " . $file2 . ", " . $file3 . ", " . $file4 . ", " . $file5;
+            $photo = $file;
 
-
+//  . ", " . $file2 . ", " . $file3 . ", " . $file4 . ", " . $file5;
 
             $reponse = $pdo->prepare("SELECT photo_id FROM photo WHERE photo1 = :photo1");
             $reponse->bindParam(':photo1', $file1, PDO::PARAM_STR);
@@ -100,7 +112,7 @@ if (isset($_POST['annonce'])) {
             $imageID = intval($imageI['photo_id']);
 
             $titre = trim($_POST['titre']);
-            if (strlen($titre) > 100 || strlen($titre) < 5) {
+            if (strlen($titre) > 300 || strlen($titre) < 1) {
                 echo "<script type='text/javascript'>alert('Ce titre est trop long ou trop court');</script>";
             } else {
 
@@ -135,8 +147,7 @@ if (isset($_POST['annonce'])) {
                     $inscription->execute();
 
                     echo "
-        <script type='text/javascript'>alert('Annonce bien posté !');</script>
-        <script>window.location = 'ajouterAnnonce.php'</script>
+
         ";
                 }
             }
@@ -198,12 +209,13 @@ if (isset($_POST['annonce'])) {
 
             <div class="col-5">
                 <div class="form-group row">
-                    <label for="pays">Choisir 5 images</label>
-                    <input type="file" class="col-2 mx-auto" name="file1[]" id="file1">
+                    <label for="pays">Choisir 5 images maximum</label>
+                    <input type="file" class="col-2 mx-auto" name="file1[]" id="file1" multiple = "multiple">
+                    <!-- <input type="file" class="col-2 mx-auto" name="file1[]" id="file1">
                     <input type="file" class="col-2 mx-auto" name="file2[]" id="file2">
                     <input type="file" class="col-2 mx-auto" name="file3[]" id="file3">
                     <input type="file" class="col-2 mx-auto" name="file4[]" id="file4">
-                    <input type="file" class="col-2 mx-auto" name="file5[]" id="file5">
+                    <input type="file" class="col-2 mx-auto" name="file5[]" id="file5"> -->
                     <!-- <button type="submit" class="form-control" id="image" name="image">Upload</button> -->
                 </div>
                 <div class="form-group mb-2 mt-3">

@@ -97,21 +97,21 @@ require_once('header/header.php');
                             <button type='button' data-bs-target='#carouselExampleIndicators' data-bs-slide-to='3' aria-label='Slide 3'></button>
                             <button type='button' data-bs-target='#carouselExampleIndicators' data-bs-slide-to='4' aria-label='Slide 3'></button>
                             </div>
-                            <div class='carousel-inner' style='max-width:50rem; max-height:50rem !important;'>
+                            <div class='carousel-inner' >
                             <div class='carousel-item active' data-bs-interval='500000000'>
-                                <img src='upload/$donneesPhoto[photo1]' class='d-block w-100' alt='...'>
+                                <img src='upload/$donneesPhoto[photo1]' style='max-width:100%; object-fit:cover; aspect-ratio: 1;' class='d-block w-100' alt='...'>
                             </div>
                             <div class='carousel-item' data-bs-interval='500000000'>
-                                <img src='upload/$donneesPhoto[photo2]' class='d-block w-100' alt='...'>
+                                <img src='upload/$donneesPhoto[photo2]' style='max-width:100%; object-fit:cover; aspect-ratio: 1;' class='d-block w-100' alt='...'>
                             </div>
                             <div class='carousel-item' data-bs-interval='500000000'>
-                                <img src='upload/$donneesPhoto[photo3]' class='d-block w-100' alt='...'>
+                                <img src='upload/$donneesPhoto[photo3]' style='max-width:100%; object-fit:cover; aspect-ratio: 1;' class='d-block w-100' alt='...'>
                             </div>
                             <div class='carousel-item' data-bs-interval='500000000'>
-                                <img src='upload/$donneesPhoto[photo4]' class='d-block w-100' alt='...'>
+                                <img src='upload/$donneesPhoto[photo4]' style='max-width:100%; object-fit:cover; aspect-ratio: 1;' class='d-block w-100' alt='...'>
                             </div>
                             <div class='carousel-item' data-bs-interval='500000000'>
-                                <img src='upload/$donneesPhoto[photo5]' class='d-block w-100' alt='...'>
+                                <img src='upload/$donneesPhoto[photo5]' style='max-width:100%; object-fit:cover; aspect-ratio: 1;' class='d-block w-100' alt='...'>
                             </div>
                             <button class='carousel-control-prev' type='button' data-bs-target='#carouselExampleIndicators' data-bs-slide='prev'>
                             <span class='carousel-control-prev-icon' aria-hidden='true'></span>
