@@ -51,7 +51,7 @@ if (isset($_POST['annonce'])) {
 
 
 
-        if (isset($_FILES['file1'])) {
+        if (!empty($_FILES['file1'])) {
 
             uploadFichier($_FILES['file1']);
             $insertion = $pdo->prepare("INSERT INTO photo (photo1) VALUE (:image1)");
@@ -245,16 +245,9 @@ if (isset($_POST['annonce'])) {
                 <div class="form-group row">
                     <label for="pays">Choisir 5 images max</label>
                     <input type="file" class="col-2 mx-auto" name="file1[]" id="file1" multiple="multiple">
-                    <!-- <input type="file" class="col-2 mx-auto" name="file1[]" id="file1">
-                    <input type="file" class="col-2 mx-auto" name="file2[]" id="file2">
-                    <input type="file" class="col-2 mx-auto" name="file3[]" id="file3">
-                    <input type="file" class="col-2 mx-auto" name="file4[]" id="file4">
-                    <input type="file" class="col-2 mx-auto" name="file5[]" id="file5"> -->
-                    <!-- <button type="submit" class="form-control" id="image" name="image">Upload</button> -->
                 </div>
                 <div class="form-group mb-2 mt-3">
                     <label for="pays">Votre pays</label>
-                    <!-- <input type="text" class="form-control" id="pays" name="pays" placeholder="Entrez votre pays"> -->
                     <select class="form-select" id="pays" name="pays">
                         <option selected>Choisissez votre pays</option>
                         <?php $countries = array(
